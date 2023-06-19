@@ -1,5 +1,5 @@
 {
-  "name": "p01_ran_quo_machine",
+  "name": "Random quote machine",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
