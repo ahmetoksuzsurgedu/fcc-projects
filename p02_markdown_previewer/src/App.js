@@ -4,7 +4,7 @@ import {marked} from 'marked'
 
 
 function App() {
-  const [previewValue, setPreviewValue] = useState('<h1>a heading element (H1 size)</h1> <h2>a sub heading element (H2 size) </h2> <a href="https://surgegifting.com/" alt="surgegifting.com"></a> inline code: <code><a href="https://surgegifting.com/" alt="surgegifting.com"></a></code>, a code block: <pre><code>  <h1>a heading element (H1 size)</h1> <h2>a sub heading element (H2 size) </h2> <a href="https://surgegifting.com/" alt="surgegifting.com"></a> </code></pre>, a list item:ordered:<ol><li>ordered</li> <li>list</li> <li>items</li> </ol>,unordered: <ul> <li>UNordered</li> <li>list</li> <li>items</li> </ul> a blockquote: <blockquote><p>When you believe it something is correct; do it!</p> </blockquote>, <img src="https://surgegifting.com/wp-content/uploads/2021/02/IMG_4071-scaled.jpeg" alt="wallet"></img> <strong> bolded text. </strong>')
+  const [previewValue, setPreviewValue] = useState('# Welcome to my React Markdown Previewer!\n  ## a sub heading element (H2 size)\n hier is a [link](https://surgegifting.com) \n\n  this is an inline code: `<a href="https://surgegifting.com/"></a>` \n\n  and a code block: \n\n```  \n\n   <h1>a heading element (H1 size)</h1>\n\n   <h2>a sub heading element (H2 size) </h2>\n\n   <a href="https://surgegifting.com/"></a>\n\n ```\n\n An ordered list:\n\n 1. ordered\n\n 2. list\n\n 3. items\n\n An unordered list:\n\n * UNordered\n\n * list\n\n * items \n\n a blockquote:\n\n > |When you believe it something is correct;\n\n > |do it!\n\n, A/n **bolded**, _italic_, ~cross out~ text. \n\n  ![wallet](https://surgegifting.com/wp-content/uploads/2021/02/IMG_4071-scaled.jpeg)')
   
   const updatePreview=function(e){
     setPreviewValue(e.target.value);
@@ -16,10 +16,15 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <h1>hello</h1>
-      <textarea id="editor" onChange={updatePreview} ></textarea>
+    <div className="app">
+      <div className="editor-container">
+        <div className="editor-toolbar">Editor</div>
+      <textarea id="editor" typeof="text" value={previewValue}  onChange={updatePreview} ></textarea>
+      </div>
+      <div className="preview-container">
+        <div className="preview-toolbar">Previewer</div>
       <div id="preview" dangerouslySetInnerHTML={markedTextarea()} ></div>
+      </div>
     </div>
   );
 }
