@@ -8,7 +8,7 @@ const myQuotes=[
   },
   { 
     quoteId:1,
-    quoteText:"Gercekler insan acitir!",
+    quoteText:"Gercekler insani acitir!",
     quoteAuthor:"Nefise"
   },
   { 
@@ -45,9 +45,8 @@ return (
   </div>
 
   <div className="btn-and-posts">
-    <div id="tweet-quote">
-      <a className="tweet-face" rel="noreferrer" href={twitHref} target="_blank"><i class="fa fa-twitter"></i></a>
-  
+    <div className ="tweet-quote">
+      <a id="tweet-quote" className="tweet-face" rel="noreferrer" href={twitHref} target="_blank"><i class="fa fa-twitter"></i></a>
       <a className="tweet-face" rel="noreferrer" href={faceHref} target="_blank"><i class="fa fa-facebook"></i></a>
     </div>
 
