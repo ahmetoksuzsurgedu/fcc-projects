@@ -1,3 +1,6 @@
+* {
+  box-sizing: border-box;
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -13,15 +16,10 @@ body {
   background-color: aliceblue;
   color: black;
   font-family:Georgia, 'Times New Roman', Times, serif;
-  font-size: medium;
-  line-height: normal;
-  margin: 5px;
-  padding: 5px;
-  text-align: left;
-  display: flex;
-  overflow:visible;
-  border: solid red 2px;
-  box-sizing: border-box;
+  font-size: 16px;
+  line-height: 1.8rem;
+  margin: 0;
+  padding: 0;
 }
 .app {
   display: flex;
@@ -32,50 +30,66 @@ body {
 
 
 .editor-container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+  margin: 10px;
+  width: 80%;
+  min-width: 350px;
   background-color: antiquewhite;
   color: rgb(22, 20, 20);
-  /* padding: 5px; */
-  width: 50%;
-  border: solid blueviolet 2px;
-  
-  
 }
 .editor-toolbar {
-  padding: 5px;
-  border-bottom: 0;
+  width: 100%;
+  padding: 5px 10px;
+  font-size: 1.25rem;
   font-weight: bold;
   border: solid black 1px;
   background-color: rgb(244, 187, 112);
 
 }
 #editor {
+  flex: 1 1 auto;
   padding: 10px;
   border: solid black 1px;
   width: 100%;
-  aspect-ratio: 1;
+  min-height: 250px;
+}
+
+textarea {
+  resize: vertical;
 }
 
 .preview-container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
   background-color: antiquewhite;
   color: black;
-  width: 50%;
-  border: solid blueviolet 2px;
+  margin: 10px;
+  min-width: 400px;
+  width: 95%;
 
+  
 }
-
 .preview-toolbar {
+  width: 100%;
   background-color: rgb(244, 187, 112);
   font-weight: bold;
-  padding: 5px;
+  font-size: 1.25rem;
+  padding: 5px 10px;
   border: solid black 1px;
-  border-bottom: 0;
 }
-
 #preview {
-  border: solid black 1px;
+  width: 100%;
   padding: 10px;
 }
-
 img {
-  width: 500px;
+
+  max-width: 600px;
+}
+
+.editor-container, .preview-container {
+  box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.7);
 }
