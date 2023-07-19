@@ -3,8 +3,6 @@ import './App.css';
 
 function App() {
 
-// #7: At any time, pressing the clear button clears the input and output values, and returns the calculator to its initialized state; 0 should be shown in the element with the id of display.
-// 8: As I input numbers, I should be able to see my input in the element with the id of display.
 // #9: In any order, I should be able to add, subtract, multiply and divide a chain of numbers of any length, and when I hit =, the correct result should be shown in the element with the id of display.
 
 // #10: When inputting numbers, my calculator should not allow a number to begin with multiple zeros.
@@ -19,17 +17,76 @@ const [dispDown, setDispDown] = useState('0')
 
 const nmbrClicked = (btnValue) => {
   // console.log(btnValue)
-  if (!isNaN(btnValue) || btnValue === '.') {
-  console.log("if de: " + btnValue)
-
-    setDispUp(preDisp => preDisp+btnValue.toString());
-    setDispDown(preDisp => preDisp+btnValue.toString());
-  } else if (btnValue === 'AC') {
+  if (btnValue === 'AC') {
     setDispUp('0');
     setDispDown('0');
-  } 
-}
+  } else {
+          // if it is NOT a number
+          if (isNaN(btnValue)) {
+            // if clicked btn is -
+            if (btnValue === '-') {  
+              const lastChar = dispUp.slice(-1);
+              const secondLastChar = dispUp.slice(-2,-1);
+         if (dispUp === '0') {              
+                setDispUp(btnValue.toString())               
+                setDispDown(btnValue.toString()); 
+              } else if (lastChar !== '-') {
+                        setDispUp(preDispU => preDispU+btnValue.toString());
+                        setDispDown(btnValue.toString());                  
+                      } else if (secondLastChar !== '-' && secondLastChar !== '') {
+                        setDispUp(preDispU => preDispU+btnValue.toString());
+                        setDispDown(btnValue.toString());      
+                      }
+            // if clicked btn is NOT - // other operators
+            } else {
+            const operators = ['+','-','*','/'];       
+console.log("dispUp" + dispUp,",dispUp.lenhth",dispUp.length,"btnValue",btnValue,"dispUp[dispUp.length-1]",dispUp[dispUp.length-1])
+              if (!operators.includes(dispUp[dispUp.length-1]) && btnValue !== '-') {
+              
+console.log("dispUp if de" + dispUp)
+            setDispUp(preDispU => preDispU + btnValue.toString());
+            setDispDown(dispUp.slice(0, dispUp.length - 1) + btnValue);
+              }
+console.log("if sonrasi" + dispUp)
+      
 
+            // if (dispUp === '0') {              
+            //   setDispUp(btnValue.toString())               
+            //   setDispDown(btnValue.toString()); 
+            // } else if (operators.includes(btnValue)) {
+            //           setDispUp(preDispU => preDispU+btnValue.toString());
+            //           setDispDown(btnValue.toString());                  
+            //         } else {
+            //           const asd = dispUp.slice(0,dispUp.length)
+            //           console.log(btnValue +lastChar +":else-lastChar =>:" + dispUp+ asd +dispUp.length)    
+
+            //         }
+
+
+
+          }   
+          // if it is a number
+          } else {
+            if (dispUp === '0') {
+              setDispUp(btnValue.toString());
+              setDispDown(btnValue.toString());  
+            } else {
+              console.log("number",btnValue)
+              console.log("dispDown",dispDown)
+              
+              const operators = ['+','-','*','/'];       
+              if (!operators.includes(dispDown)) {
+                setDispUp(preDispU => preDispU+btnValue.toString());
+                setDispDown(preDispD => preDispD+btnValue.toString());
+              } else {
+                setDispUp(preDispU => preDispU+btnValue.toString());
+                setDispDown(preDispD => btnValue.toString());
+              }
+            }
+          }
+        
+}
+}
   return (
     <div>
       <div id="js-calc" className="">
