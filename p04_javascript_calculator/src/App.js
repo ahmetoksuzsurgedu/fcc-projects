@@ -3,78 +3,91 @@ import './App.css';
 
 function App() {
 
-// #9: In any order, I should be able to add, subtract, multiply and divide a chain of numbers of any length, and when I hit =, the correct result should be shown in the element with the id of display.
-
-// #10: When inputting numbers, my calculator should not allow a number to begin with multiple zeros.
-// #11: When the decimal element is clicked, a . should append to the currently displayed value; two . in one number should not be accepted.
-// #12: I should be able to perform any operation (+, -, *, /) on numbers containing decimal points.
-// #13: If 2 or more operators are entered consecutively, the operation performed should be the last operator entered (excluding the negative (-) sign). For example, if 5 + * 7 = is entered, the result should be 35 (i.e. 5 * 7); if 5 * - 5 = is entered, the result should be -25 (i.e. 5 * (-5)).
-// #14: Pressing an operator immediately following = should start a new calculation that operates on the result of the previous evaluation.
-// #15: My calculator should have several decimal places of precision when it comes to rounding (note that there is no exact standard, but you should be able to handle calculations like 2 / 7 with reasonable precision to at least 4 decimal places).
-
 const [dispUp, setDispUp] = useState('0')
 const [dispDown, setDispDown] = useState('0')
 
 const nmbrClicked = (btnValue) => {
-  // console.log(btnValue)
+  const operators = '+-*/'; 
+  const secondLastChar = dispUp.slice(-2,-1);
+  const lastChar = dispUp.slice(-1);
+
   if (btnValue === 'AC') {
     setDispUp('0');
     setDispDown('0');
   } else {
-          // if it is NOT a number
-          if (isNaN(btnValue)) {
+          // if it is NOT a number & . & =
+          if (isNaN(btnValue) && btnValue !== '=' && btnValue !== '.') {
+
             // if clicked btn is -
             if (btnValue === '-') {  
-              const lastChar = dispUp.slice(-1);
-              const secondLastChar = dispUp.slice(-2,-1);
-         if (dispUp === '0') {              
-                setDispUp(btnValue.toString())               
-                setDispDown(btnValue.toString()); 
-              } else if (lastChar !== '-') {
-                        setDispUp(preDispU => preDispU+btnValue.toString());
-                        setDispDown(btnValue.toString());                  
-                      } else if (secondLastChar !== '-' && secondLastChar !== '') {
-                        setDispUp(preDispU => preDispU+btnValue.toString());
-                        setDispDown(btnValue.toString());      
-                      }
-            // if clicked btn is NOT - // other operators
-            } else {
-            const operators = ['+','-','*','/'];       
-console.log("dispUp" + dispUp,",dispUp.lenhth",dispUp.length,"btnValue",btnValue,"dispUp[dispUp.length-1]",dispUp[dispUp.length-1])
-              if (!operators.includes(dispUp[dispUp.length-1]) && btnValue !== '-') {
-              
-console.log("dispUp if de" + dispUp)
-            setDispUp(preDispU => preDispU + btnValue.toString());
-            setDispDown(dispUp.slice(0, dispUp.length - 1) + btnValue);
+              if (dispUp === '0') {              
+                    setDispUp(btnValue.toString())               
+                    setDispDown(btnValue.toString()); 
+                  } else if (lastChar !== '-' && !dispUp.includes('=')) {
+                            setDispUp(preDispU => preDispU+btnValue.toString());
+                            setDispDown(btnValue.toString());                  
+                          } else {
+                            if (!operators.includes(secondLastChar) && secondLastChar !== '') {
+                            if (!dispUp.includes('=')){
+                              setDispUp(preDispU => preDispU+' '+btnValue.toString());
+                            } else {
+                              setDispUp(dispDown+btnValue.toString());
+                            }
+                            setDispDown(btnValue.toString());      
+                          } else {}
+                        }
+            // if clicked btn is NOT - , other operators
+            } else {    
+              if (!operators.includes(dispUp[dispUp.length-1]) && btnValue !== '-') { 
+                if (dispUp.includes('=')) {
+                setDispUp(dispDown + btnValue.toString());
+                } else {
+                setDispUp(preDispU => preDispU + btnValue.toString());
+                }
+                setDispDown(btnValue.toString());
+              } else {
+                if (!operators.includes(secondLastChar)) {
+                  setDispUp(dispUp.slice(0, dispUp.length - 1) + btnValue.toString());
+                  setDispDown(btnValue.toString());
+                } else {
+                  setDispUp(dispUp.slice(0, dispUp.length - 2) + btnValue.toString());
+                  setDispDown(btnValue.toString());
+                }
               }
-console.log("if sonrasi" + dispUp)
-      
-
-            // if (dispUp === '0') {              
-            //   setDispUp(btnValue.toString())               
-            //   setDispDown(btnValue.toString()); 
-            // } else if (operators.includes(btnValue)) {
-            //           setDispUp(preDispU => preDispU+btnValue.toString());
-            //           setDispDown(btnValue.toString());                  
-            //         } else {
-            //           const asd = dispUp.slice(0,dispUp.length)
-            //           console.log(btnValue +lastChar +":else-lastChar =>:" + dispUp+ asd +dispUp.length)    
-
-            //         }
-
-
-
           }   
+          // if it is =
+          } else if (btnValue === '=') {
+            if (!dispUp.includes('=')) {
+              let result =''
+              setDispUp(operators.includes(lastChar) ? result= dispUp.slice(0,dispUp.length - 1 ) : result = dispUp);
+              // eslint-disable-next-line
+              setDispUp(preDispU => preDispU + btnValue.toString() + Number.parseFloat(eval(result)));
+              // eslint-disable-next-line
+              setDispDown(Number.parseFloat(eval(result)));
+            } else {}
+          // if it is .
+        } else if (btnValue === '.') {
+          if (dispDown === '0') {
+            setDispUp(preDispU => preDispU+btnValue.toString());
+            setDispDown(preDispD => preDispD+btnValue.toString());
+            } else if (operators.includes(dispDown)) {
+              setDispUp(preDispU => preDispU+ '0' + btnValue.toString());
+              setDispDown(preDispD => preDispD+ '0' + btnValue.toString());
+            } else {
+              if (!isNaN(dispDown)) {
+                 if (!dispUp.includes('=') && !dispDown.includes('.')) {
+                setDispUp(preDispU => preDispU+btnValue.toString());
+                setDispDown(preDispD => preDispD+btnValue.toString());
+              } else {}
+            } else {}
+          }
+
           // if it is a number
-          } else {
+        } else {
             if (dispUp === '0') {
               setDispUp(btnValue.toString());
               setDispDown(btnValue.toString());  
             } else {
-              console.log("number",btnValue)
-              console.log("dispDown",dispDown)
-              
-              const operators = ['+','-','*','/'];       
               if (!operators.includes(dispDown)) {
                 setDispUp(preDispU => preDispU+btnValue.toString());
                 setDispDown(preDispD => preDispD+btnValue.toString());
@@ -86,7 +99,9 @@ console.log("if sonrasi" + dispUp)
           }
         
 }
+
 }
+
   return (
     <div>
       <div id="js-calc" className="">
@@ -118,6 +133,7 @@ console.log("if sonrasi" + dispUp)
     </div>
     
   );
+  
 }
 
 export default App;
