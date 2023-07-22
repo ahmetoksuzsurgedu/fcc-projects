@@ -11,96 +11,106 @@ const nmbrClicked = (btnValue) => {
   const secondLastChar = dispUp.slice(-2,-1);
   const lastChar = dispUp.slice(-1);
 
-  if (btnValue === 'AC') {
-    setDispUp('0');
-    setDispDown('0');
-  } else {
-          // if it is NOT a number & . & =
-          if (isNaN(btnValue) && btnValue !== '=' && btnValue !== '.') {
+  // if btnValue is an operator
+  if (isNaN(btnValue) && btnValue !== '=' && btnValue !== '.' && btnValue !== 'AC') {
 
-            // if clicked btn is -
-            if (btnValue === '-') {  
-              if (dispUp === '0') {              
-                    setDispUp(btnValue.toString())               
-                    setDispDown(btnValue.toString()); 
-                  } else if (lastChar !== '-' && !dispUp.includes('=')) {
-                            setDispUp(preDispU => preDispU+btnValue.toString());
-                            setDispDown(btnValue.toString());                  
-                          } else {
-                            if (!operators.includes(secondLastChar) && secondLastChar !== '') {
-                            if (!dispUp.includes('=')){
-                              setDispUp(preDispU => preDispU+' '+btnValue.toString());
-                            } else {
-                              setDispUp(dispDown+btnValue.toString());
-                            }
-                            setDispDown(btnValue.toString());      
-                          } else {}
-                        }
-            // if clicked btn is NOT - , other operators
-            } else {    
-              if (!operators.includes(dispUp[dispUp.length-1]) && btnValue !== '-') { 
-                if (dispUp.includes('=')) {
-                setDispUp(dispDown + btnValue.toString());
-                } else {
-                setDispUp(preDispU => preDispU + btnValue.toString());
-                }
-                setDispDown(btnValue.toString());
-              } else {
-                if (!operators.includes(secondLastChar)) {
-                  setDispUp(dispUp.slice(0, dispUp.length - 1) + btnValue.toString());
-                  setDispDown(btnValue.toString());
-                } else {
-                  setDispUp(dispUp.slice(0, dispUp.length - 2) + btnValue.toString());
-                  setDispDown(btnValue.toString());
-                }
-              }
-          }   
-          // if it is =
-          } else if (btnValue === '=') {
-            if (!dispUp.includes('=')) {
-              let result =''
-              setDispUp(operators.includes(lastChar) ? result= dispUp.slice(0,dispUp.length - 1 ) : result = dispUp);
-              // eslint-disable-next-line
-              setDispUp(preDispU => preDispU + btnValue.toString() + Number.parseFloat(eval(result)));
-              // eslint-disable-next-line
-              setDispDown(Number.parseFloat(eval(result)));
-            } else {}
-          // if it is .
-        } else if (btnValue === '.') {
-          if (dispDown === '0') {
-            setDispUp(preDispU => preDispU+btnValue.toString());
-            setDispDown(preDispD => preDispD+btnValue.toString());
-            } else if (operators.includes(dispDown)) {
-              setDispUp(preDispU => preDispU+ '0' + btnValue.toString());
-              setDispDown(preDispD => preDispD+ '0' + btnValue.toString());
+    // if clicked btn is -
+    if (btnValue === '-') {  
+      if (dispUp === '0') {              
+            setDispUp(btnValue.toString())               
+            setDispDown(btnValue.toString()); 
+        } else if (lastChar !== '-' && !dispUp.toString().includes('=')) {
+                    setDispUp(preDispU => preDispU+btnValue.toString());
+                    setDispDown(btnValue.toString());                  
+          } else {
+          if (!operators.includes(secondLastChar) && secondLastChar !== '' && secondLastChar !== ' ') {
+          if (!dispUp.toString().includes('=')){
+            setDispUp(preDispU => preDispU+' '+btnValue.toString());
             } else {
-              if (!isNaN(dispDown)) {
-                 if (!dispUp.includes('=') && !dispDown.includes('.')) {
-                setDispUp(preDispU => preDispU+btnValue.toString());
-                setDispDown(preDispD => preDispD+btnValue.toString());
-              } else {}
-            } else {}
+            setDispUp(dispDown+btnValue.toString());
           }
-
-          // if it is a number
+          setDispDown(btnValue.toString());      
+        } else {}
+            }
+    // if clicked btn is NOT - , other operators
+    } else {    
+      if (!operators.includes(dispUp[dispUp.length-1]) && btnValue !== '-') { 
+        if (dispUp.toString().includes('=')) {
+        setDispUp(dispDown + btnValue.toString());
         } else {
-            if (dispUp === '0') {
-              setDispUp(btnValue.toString());
-              setDispDown(btnValue.toString());  
-            } else {
-              if (!operators.includes(dispDown)) {
-                setDispUp(preDispU => preDispU+btnValue.toString());
+        setDispUp(preDispU => preDispU + btnValue.toString());
+        }
+        setDispDown(btnValue.toString());
+      } else {
+        if (!operators.includes(secondLastChar)) {
+          setDispUp(dispUp.slice(0, dispUp.length - 1) + btnValue.toString());
+          setDispDown(btnValue.toString());
+        } else {
+          setDispUp(dispUp.slice(0, dispUp.length - 2) + btnValue.toString());
+          setDispDown(btnValue.toString());
+        }
+      }
+      }   
+
+    }// if btnValue is =
+   else if (btnValue === '=') {
+    if (!dispUp.toString().includes('=')) {
+      let result =dispUp.toString();
+      // if last character is an operator, throw it.
+      if (operators.includes(result.slice(-1))) {
+        result = result.slice(0,result.length-1)
+      }
+      result = result.trim();
+      if (operators.includes(result.slice(-1))) {
+        result = result.slice(0,result.length-1)
+      }
+    // setDispUp(result.toString()); 
+      // eslint-disable-next-line
+      setDispUp(result + btnValue.toString() + parseFloat(eval(result).toFixed(5)).toString());
+      // eslint-disable-next-line
+      setDispDown(parseFloat(eval(result).toFixed(5)).toString());
+    } else {}
+
+    }  // if it is .
+ else if (btnValue === '.') {
+  if (dispDown === '0') {
+    setDispUp(preDispU => preDispU+btnValue.toString());
+    setDispDown(preDispD => preDispD+btnValue.toString());
+    } else {
+      if (operators.includes(dispDown)) {
+        setDispUp(preDispU => preDispU+ '0' + btnValue.toString());
+        setDispDown(preDispD => preDispD+ '0' + btnValue.toString());
+      } else {
+              if (!dispDown.toString().includes('.') && !dispUp.toString().includes('=')) {
+                setDispUp(preDispU => preDispU + btnValue.toString());
+                setDispDown(preDispD => preDispD + btnValue.toString());
+              } else if (!dispDown.toString().includes('.')) {
+                setDispUp(dispDown + btnValue.toString());
                 setDispDown(preDispD => preDispD+btnValue.toString());
-              } else {
-                setDispUp(preDispU => preDispU+btnValue.toString());
-                setDispDown(preDispD => btnValue.toString());
               }
             }
-          }
-        
-}
+  }
+}   // if btnValue is AC
+ else if (btnValue === 'AC') {
+    setDispUp('0');
+    setDispDown('0');
+  } // if btnValue is a number
+  else {
+      if (dispUp === '0') {
+        setDispUp(btnValue.toString());
+        setDispDown(btnValue.toString());  
+      } else {
+        if (!operators.includes(dispDown)) {
+          setDispUp(preDispU => preDispU+btnValue.toString());
+          setDispDown(preDispD => preDispD+btnValue.toString());
+        } else {
+          setDispUp(preDispU => preDispU+btnValue.toString());
+          setDispDown(preDispD => btnValue.toString());
+        }
+      }
+    }
 
-}
+} // close for fnc nmbrClicked
 
   return (
     <div>
