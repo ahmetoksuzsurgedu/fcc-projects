@@ -1,40 +1,68 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import './App.css';
 
 function App() {
 
-  const [breakTime, setBreakTime] = useState(5)
-  const [sessionTime, setSessionTime] = useState(25)
-  const [leftTime, setLeftTime] = useState(25)
+  const [breakTime, setBreakTime] = useState(1) // 
+  const [sessionTime, setSessionTime] = useState(2) //
+  const [leftTimeS, setLeftTimeS] = useState(1*6) //???
+  const [leftTimeB, setLeftTimeB] = useState(1*6) //???
   const [sessionActive, setSessionActive] =useState(true)
-  // const [started, setStarted] = useState(false)
-  const [timerRunning, settimerRunning] = useState(false)
+  const [timerLabel, setTimerLabel] = useState("Session")
+  const [timerNotRunning, settimerNotRunning] = useState(true)
+  const [intervalID, setIntervalID] = useState(null)
 
 
 const breakDecr = () => {
-  if (breakTime> 1 && !timerRunning) {
+  if (breakTime> 1 && timerNotRunning) {
   setBreakTime(brkPreVal => brkPreVal - 1)
-  // setLeftTime(preLeft => preLeft - 1)
+    if (!sessionActive) {
+      setLeftTimeB((breakTime-1) * 60)
+    }
   }
 }
 const breakIncr = () => {
-  if (breakTime < 60 && !timerRunning) {
+  if (breakTime < 60 && timerNotRunning) {
   setBreakTime(brkPreVal => brkPreVal + 1)
-  // setLeftTime(preLeft => preLeft + 1)
+  if (!sessionActive) {
+    setLeftTimeB((breakTime+1) * 60)
+  }
   }
 }
 const sessionDecr = () => {
-  if (sessionTime> 1 && !timerRunning) {
+  if (sessionTime> 1 && timerNotRunning) {
   setSessionTime(sesPreVal => sesPreVal - 1)
-  setLeftTime(preLeft => preLeft - 1)
+  setLeftTimeS((sessionTime-1) * 60)
   }
 }
 const sessionIncr = () => {
-  if (sessionTime < 60 && !timerRunning) {
+  if (sessionTime < 60 && timerNotRunning) {
   setSessionTime(sesPreVal => sesPreVal + 1)
-  setLeftTime(preLeft => preLeft + 1)
+  setLeftTimeS((sessionTime+1) * 60)
   }
 }
+useEffect(() => {
+  if (leftTimeS === 0 ) {
+    setSessionActive(preSessionState => !preSessionState)
+  }
+}, [leftTimeS])
+useEffect(() => {
+  if (leftTimeB === 0 ) {
+    setSessionActive(preSessionState => !preSessionState)
+  }
+}, [leftTimeB])
+
+useEffect(() => {
+  if (sessionActive) {
+    setTimerLabel("Session");
+    setLeftTimeS(sessionTime * 6); // ?????
+   } else {
+    setTimerLabel("Break");
+    setLeftTimeB(breakTime * 6); // ???
+   }
+
+}, [sessionActive])
+
 
 
 const formatTime = ((totalSeconds) => {
@@ -42,26 +70,37 @@ const formatTime = ((totalSeconds) => {
   const seconds = totalSeconds % 60;
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 })
-
 const startStop = () => {
-  // first click the element with id="start_stop", the timer should begin running from the value currently displayed in id="session-length"
-  if (sessionActive && !timerRunning) {
-    setLeftTime(sessionTime) 
-    settimerRunning(true);
-    setInterval(() => {
-      
-    }, 1000);
-   } else {
-      setLeftTime(breakTime)
-      // ?????
-  }
+  
+  if (sessionActive && timerNotRunning) {
+    setIntervalID(setInterval(() => {
+          setLeftTimeS(leftinSec => leftinSec - 1);
+        }, 1000));
 
+    settimerNotRunning(false);
+
+   } else if (!sessionActive && timerNotRunning) {
+      setIntervalID(setInterval(() => {
+            setLeftTimeB(leftinSec => leftinSec - 1);
+          }, 1000));
+
+   } else {
+    // setLeftTime(breakTime)
+    clearInterval(intervalID);
+    settimerNotRunning(true);
+
+  }
 }
 
   const resetHandle = () => {
   // ??? any running timer should be stopped
   setBreakTime(5);
   setSessionTime(25);
+  setLeftTimeS(25*60);
+  setLeftTimeB(5*60);
+  settimerNotRunning(true);
+  clearInterval(intervalID);
+
 // ??? the element with id="time-left" should reset to its default state.
 }
 
@@ -87,19 +126,17 @@ const startStop = () => {
       </div>
       </div>
       <div className="display" >
-        <div id="timer-label">Session</div>
-        <div id="time-left">{formatTime(leftTime * 60)}</div>  {/* paused or running alwas be displayed  mm:ss */}
+        <div id="timer-label">{timerLabel}</div>
+        <div id="time-left">{sessionActive ? formatTime(leftTimeS) : formatTime(leftTimeB) }</div>  {/* paused or running alwas be displayed  mm:ss */}
       </div>
       <div className="controls">
         <div id="start_stop"  onClick={startStop}><i className="fa-solid fa-play"></i><i className="fa-solid fa-pause"></i></div>
         <div id="reset" onClick={resetHandle}><i className="fa-solid fa-rotate fa-rotate-90"></i></div>
       </div>
 
-      {/* #19: If the timer is running, the element with the id of time-left should display the remaining time in mm:ss format (decrementing by a value of 1 and updating the display every 1000ms). */}
-      {/* #20: If the timer is running and I click the element with id="start_stop", the countdown should pause. */}
-      {/* #21: If the timer is paused and I click the element with id="start_stop", the countdown should resume running from the point at which it was paused. */}
-      {/* #22: When a session countdown reaches zero (NOTE: timer MUST reach 00:00), and a new countdown begins, the element with the id of timer-label should display a string indicating a break has begun. */}
-      {/* #23: When a session countdown reaches zero (NOTE: timer MUST reach 00:00), a new break countdown should begin, counting down from the value currently displayed in the id="break-length" element. */}
+     
+     
+    
       {/* #24: When a break countdown reaches zero (NOTE: timer MUST reach 00:00), and a new countdown begins, the element with the id of timer-label should display a string indicating a session has begun. */}
       {/* #25: When a break countdown reaches zero (NOTE: timer MUST reach 00:00), a new session countdown should begin, counting down from the value currently displayed in the id="session-length" element. */}
       {/* #26: When a countdown reaches zero (NOTE: timer MUST reach 00:00), a sound indicating that time is up should play. This should utilize an HTML5 audio tag and have a corresponding id="beep". */}
