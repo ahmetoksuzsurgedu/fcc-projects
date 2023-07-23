@@ -5,8 +5,7 @@ function App() {
 
   const [breakTime, setBreakTime] = useState(1) // 
   const [sessionTime, setSessionTime] = useState(2) //
-  const [leftTimeS, setLeftTimeS] = useState(1*6) //???
-  const [leftTimeB, setLeftTimeB] = useState(1*6) //???
+  const [leftTime, setLeftTime] = useState(1*6) //???
   const [sessionActive, setSessionActive] =useState(true)
   const [timerLabel, setTimerLabel] = useState("Session")
   const [timerNotRunning, settimerNotRunning] = useState(true)
@@ -17,7 +16,7 @@ const breakDecr = () => {
   if (breakTime> 1 && timerNotRunning) {
   setBreakTime(brkPreVal => brkPreVal - 1)
     if (!sessionActive) {
-      setLeftTimeB((breakTime-1) * 60)
+      setLeftTime((breakTime-1) * 60)
     }
   }
 }
@@ -25,40 +24,35 @@ const breakIncr = () => {
   if (breakTime < 60 && timerNotRunning) {
   setBreakTime(brkPreVal => brkPreVal + 1)
   if (!sessionActive) {
-    setLeftTimeB((breakTime+1) * 60)
+    setLeftTime((breakTime+1) * 60)
   }
   }
 }
 const sessionDecr = () => {
   if (sessionTime> 1 && timerNotRunning) {
   setSessionTime(sesPreVal => sesPreVal - 1)
-  setLeftTimeS((sessionTime-1) * 60)
+  setLeftTime((sessionTime-1) * 60)
   }
 }
 const sessionIncr = () => {
   if (sessionTime < 60 && timerNotRunning) {
   setSessionTime(sesPreVal => sesPreVal + 1)
-  setLeftTimeS((sessionTime+1) * 60)
+  setLeftTime((sessionTime+1) * 60)
   }
 }
 useEffect(() => {
-  if (leftTimeS === 0 ) {
+  if (leftTime === 0 ) {
     setSessionActive(preSessionState => !preSessionState)
   }
-}, [leftTimeS])
-useEffect(() => {
-  if (leftTimeB === 0 ) {
-    setSessionActive(preSessionState => !preSessionState)
-  }
-}, [leftTimeB])
+}, [leftTime])
 
 useEffect(() => {
   if (sessionActive) {
     setTimerLabel("Session");
-    setLeftTimeS(sessionTime * 6); // ?????
+    setLeftTime(sessionTime * 6); // ?????
    } else {
     setTimerLabel("Break");
-    setLeftTimeB(breakTime * 6); // ???
+    setLeftTime(breakTime * 6); // ???
    }
 
 }, [sessionActive])
@@ -71,33 +65,24 @@ const formatTime = ((totalSeconds) => {
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 })
 const startStop = () => {
-  
   if (sessionActive && timerNotRunning) {
     setIntervalID(setInterval(() => {
-          setLeftTimeS(leftinSec => leftinSec - 1);
+          setLeftTime(leftinSec => leftinSec - 1);
         }, 1000));
-
     settimerNotRunning(false);
-
-   } else if (!sessionActive && timerNotRunning) {
-      setIntervalID(setInterval(() => {
-            setLeftTimeB(leftinSec => leftinSec - 1);
-          }, 1000));
-
    } else {
     // setLeftTime(breakTime)
     clearInterval(intervalID);
     settimerNotRunning(true);
 
   }
-}
 
+}
   const resetHandle = () => {
   // ??? any running timer should be stopped
   setBreakTime(5);
   setSessionTime(25);
-  setLeftTimeS(25*60);
-  setLeftTimeB(5*60);
+  setLeftTime(25*60);
   settimerNotRunning(true);
   clearInterval(intervalID);
 
@@ -127,7 +112,7 @@ const startStop = () => {
       </div>
       <div className="display" >
         <div id="timer-label">{timerLabel}</div>
-        <div id="time-left">{sessionActive ? formatTime(leftTimeS) : formatTime(leftTimeB) }</div>  {/* paused or running alwas be displayed  mm:ss */}
+        <div id="time-left">{formatTime(leftTime)}</div>  {/* paused or running alwas be displayed  mm:ss */}
       </div>
       <div className="controls">
         <div id="start_stop"  onClick={startStop}><i className="fa-solid fa-play"></i><i className="fa-solid fa-pause"></i></div>
