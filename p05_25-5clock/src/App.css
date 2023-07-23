@@ -1,0 +1,93 @@
+body {
+  margin: 0;
+  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: rgb(244, 187, 112);
+
+}
+.App {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(244, 187, 112);
+  color: #333;
+  text-align: center;
+  font-family:cursive;
+  font-size: 24px;
+  font-weight: 500;
+  padding: 5px;
+}
+
+.break-session {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1.5rem;
+  font-weight: 600;
+
+}
+.break-ctrl, .session-ctrl, .controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 1.5rem;
+  font-weight: bolder;
+  margin: 5px auto;
+  padding: 10px auto;
+}
+.display {
+  align-self: center;
+  border: solid 5px #333;
+  border-radius: 75px;
+  padding: 15px;
+}
+#timer-label {
+  font-size: 2rem;
+  margin-bottom: 0;
+}
+
+#time-left {
+  margin-top: -10px;
+  font-size: 4rem;
+  font-weight: 700;
+}
+
+#author {
+  width: 65%;
+  margin: 10px auto;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+@media (max-Width:500px) {
+  .break-session {
+    flex-direction: column;
+    margin: 10px;
+  }
+  h1 {
+    font-size: 2rem;
+  }
+}
+
+
+/*
+
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+
+
+
+.App-link {
+  color: #61dafb;
+}
+
+*/
