@@ -1,15 +1,16 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect,useRef} from 'react';
 import './App.css';
 
 function App() {
 
-  const [breakTime, setBreakTime] = useState(1) // 
-  const [sessionTime, setSessionTime] = useState(2) //
-  const [leftTime, setLeftTime] = useState(1*6) //???
+  const [breakTime, setBreakTime] = useState(5)
+  const [sessionTime, setSessionTime] = useState(25)
+  const [leftTime, setLeftTime] = useState(25*60)
   const [sessionActive, setSessionActive] =useState(true)
   const [timerLabel, setTimerLabel] = useState("Session")
-  const [timerNotRunning, settimerNotRunning] = useState(true)
-  const [intervalID, setIntervalID] = useState(null)
+  const [timerNotRunning, settimerNotRunning] = useState(true);
+  const audio = document.getElementById("beep");
+  let intervalID = useRef(0);
 
 
 const breakDecr = () => {
@@ -42,20 +43,39 @@ const sessionIncr = () => {
 }
 useEffect(() => {
   if (leftTime === 0 ) {
-    setSessionActive(preSessionState => !preSessionState)
+    setSessionActive(preSessionState => !preSessionState);
+    audio.play();
   }
-}, [leftTime])
+}, [leftTime,audio])
 
 useEffect(() => {
-  if (sessionActive) {
-    setTimerLabel("Session");
-    setLeftTime(sessionTime * 6); // ?????
-   } else {
-    setTimerLabel("Break");
-    setLeftTime(breakTime * 6); // ???
-   }
+  if (!timerNotRunning) {
+  intervalID.current = setInterval(() => {
 
-}, [sessionActive])
+    setLeftTime(leftinSec => {
+      if (!sessionActive && leftinSec === 0) {
+        setSessionActive(false)
+        setTimerLabel("Break");
+        setLeftTime(breakTime * 60);
+        return leftTime
+      }
+      if (sessionActive && leftinSec === 0) {
+        setSessionActive(true);
+        setTimerLabel("Session");
+        setLeftTime(sessionTime * 60);
+
+        return leftTime
+      }
+
+      return leftinSec > 0 ? leftinSec - 1 : leftinSec;
+    });
+
+  }, 1000);
+}
+  return () => {
+    clearInterval(intervalID.current);
+  }
+}, [sessionActive,leftTime,timerNotRunning,breakTime,sessionTime])
 
 
 
@@ -64,29 +84,26 @@ const formatTime = ((totalSeconds) => {
   const seconds = totalSeconds % 60;
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 })
+
 const startStop = () => {
-  if (sessionActive && timerNotRunning) {
-    setIntervalID(setInterval(() => {
-          setLeftTime(leftinSec => leftinSec - 1);
-        }, 1000));
+  if (timerNotRunning) {
     settimerNotRunning(false);
    } else {
-    // setLeftTime(breakTime)
-    clearInterval(intervalID);
     settimerNotRunning(true);
 
   }
 
 }
   const resetHandle = () => {
-  // ??? any running timer should be stopped
   setBreakTime(5);
   setSessionTime(25);
-  setLeftTime(25*60);
+  clearInterval(intervalID.current);
+  setSessionActive(true)
+  setLeftTime(25 * 60);
+  setTimerLabel("Session");
   settimerNotRunning(true);
-  clearInterval(intervalID);
-
-// ??? the element with id="time-left" should reset to its default state.
+  audio.pause();
+  audio.currentTime = 0;
 }
 
   return (
@@ -112,22 +129,13 @@ const startStop = () => {
       </div>
       <div className="display" >
         <div id="timer-label">{timerLabel}</div>
-        <div id="time-left">{formatTime(leftTime)}</div>  {/* paused or running alwas be displayed  mm:ss */}
+        <div id="time-left">{formatTime(leftTime)}</div>
       </div>
       <div className="controls">
         <div id="start_stop"  onClick={startStop}><i className="fa-solid fa-play"></i><i className="fa-solid fa-pause"></i></div>
         <div id="reset" onClick={resetHandle}><i className="fa-solid fa-rotate fa-rotate-90"></i></div>
+        <audio id="beep" src="https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand3.wav"></audio>
       </div>
-
-     
-     
-    
-      {/* #24: When a break countdown reaches zero (NOTE: timer MUST reach 00:00), and a new countdown begins, the element with the id of timer-label should display a string indicating a session has begun. */}
-      {/* #25: When a break countdown reaches zero (NOTE: timer MUST reach 00:00), a new session countdown should begin, counting down from the value currently displayed in the id="session-length" element. */}
-      {/* #26: When a countdown reaches zero (NOTE: timer MUST reach 00:00), a sound indicating that time is up should play. This should utilize an HTML5 audio tag and have a corresponding id="beep". */}
-      {/* #27: The audio element with id="beep" must be 1 second or longer. */}
-      {/* #28: The audio element with id of beep must stop playing and be rewound to the beginning when the element with the id of reset is clicked. */}
-
 
       <p id="author">Designed and Coded by Ahmet Oksuz</p>
 
